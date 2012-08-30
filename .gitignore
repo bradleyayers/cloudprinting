@@ -1,0 +1,12 @@
+.DS_Store
+*.pyc
+/.env
+/reports
+/pylint.txt
+/*.egg
+/*.egg-info
+/*.sublime-*
+/dist/
+/docs/_build
+/build/
+/.coverage
