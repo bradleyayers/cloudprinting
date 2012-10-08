@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from os.path import join
 import re
-from setuptools import setup, find_packages
+from setuptools import setup
 
 # dynamically pull the version from cloudprinting/__init__.py
 with open(join('cloudprinting', '__init__.py'), 'r') as f:
@@ -15,7 +15,7 @@ setup(
     author_email='bradley.ayers@gmail.com',
     url='http://pypi.python.org/pypi/cloudprinting/',
 
-    packages=find_packages(exclude=['docs.*', 'docs', 'tests.*', 'tests']),
+    packages=['cloudprinting'],
     include_package_data=True,  # declarations in MANIFEST.in
 
     install_requires=['requests'],
