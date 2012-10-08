@@ -23,13 +23,14 @@ def print_pdf():
     assert response['success'] == True
 
     job = response['job']
-    timeout = 0
+    timeout = 30
     delay = 5
     attempts = range(timeout / delay + 1)
 
     try:
-        for _ in attempts:
-            sleep(delay)
+        for i in attempts:
+            if i > 0:
+                sleep(delay)
             latest = get_job(id=job['id'], auth=auth)
             if latest['status'] == 'QUEUED':
                 continue
