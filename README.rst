@@ -7,17 +7,19 @@ A simple interface to Google Cloud Print.
 Usage::
 
     >>> from cloudprinting import *
-    >>> auth = ClientLoginAuth("foo@example.com", "password")
-    >>> list_jobs(auth=auth)
+    >>> auth = OAuth2(access_token="qwertyuiopasdfghjkl", token_token="Bearer")
+    >>> r = list_jobs(auth=auth)
+    >>> r['jobs']
     [{"id": ...}, ...]
-    >>> submit_job(printer="0e506d12-dbe0-54d3-7392-fd69d45ff2fc", content="test.pdf", auth=auth)
+    >>> r = submit_job(printer="0e506d12-dbe0-54d3-7392-fd69d45ff2fc", content="test.pdf", auth=auth)
+    >>> r['job']
     {"id": "abcdefgh", ...}
     >>> delete_job("abcdefgh", auth=auth)
 
 Supports both Python 2 and 3:
 
-- >= Python 2.6
-- >= Python 3.2
+- ≥ Python 2.6
+- ≥ Python 3.2
 
 Tests
 =====
