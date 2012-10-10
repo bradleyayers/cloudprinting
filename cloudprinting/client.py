@@ -1,4 +1,4 @@
-from datetime import datetime
+# coding: utf-8
 import json
 import mimetypes
 from os.path import basename
@@ -33,6 +33,8 @@ def delete_job(id, **kwargs):
 
     :param id: job ID
     :type  id: string
+
+    :returns: API response data as `dict`, or the HTTP response on failure
     """
     url = CLOUDPRINT_URL + "/deletejob"
     r = requests.post(url, data={"jobid": id}, **kwargs)
@@ -45,7 +47,14 @@ def list_jobs(printer=None, **kwargs):
 
     :param printer: filter by a printer id
     :type  printer: string
-    :returns: `list` of `dict`, each `dict` expressing a job
+
+    :returns: API response data as `dict`, or the HTTP response on failure
+
+    Jobs are represented as `list` of `dict`::
+
+        >>> list_jobs(auth=...)['jobs']
+        [...]
+
     """
     params = {}
     if printer is not None:
@@ -57,6 +66,25 @@ def list_jobs(printer=None, **kwargs):
     # At the time of writing, the `/jobs` API returns `Content-Type:
     # text/plain` header
     return (r.json if hasattr(r, "json") else json.loads(r.text))['jobs']
+
+
+def list_printers(**kwargs):
+    """
+    List registered printers.
+
+    :returns: API response data as `dict`, or the HTTP response on failure
+
+    Printers are represented as `list` of `dict`::
+
+        >>> list_printers(auth=...)['printers']
+        [...]
+
+    """
+    url = CLOUDPRINT_URL + "/search"
+    r = requests.get(url, **kwargs)
+    if r.status_code != requests.codes.ok:
+        return r
+    return r.json
 
 
 def submit_job(printer, content, title=None, capabilities=None, tags=None,
@@ -75,9 +103,15 @@ def submit_job(printer, content, title=None, capabilities=None, tags=None,
     :param         tags: job tags
     :type          tags: list
 
+    :returns: API response data as `dict`, or the HTTP response on failure
+
+    The newly created job is represented as a `dict` in ``job``::
+
+        >>> submit_job(...)['job']
+        {...}
+
     See https://developers.google.com/cloud-print/docs/appInterfaces#submit for
     details.
-
     """
     # normalise *content* to bytes, and *name* to a string
     if isinstance(content, (list, tuple)):
@@ -89,18 +123,19 @@ def submit_job(printer, content, title=None, capabilities=None, tags=None,
             content = f.read()
 
     if title is None:
-        title = '%s %s' % (datetime.now().strftime("%d/%m/%y %H:%M"), name)
+        title = name
+
+    if capabilities is None:
+        # magic default value
+        capabilities = [{}]
 
     files = {"content": (name, content)}
-    if capabilities is not None:
-        files["capabilities"] = ("data.json",
-                                 json.dumps({"capabilities": capabilities}))
     data = {"printerid": printer,
             "title": title,
-            "contentType": mimetypes.guess_type(name)[0]}
+            "contentType": mimetypes.guess_type(name)[0],
+            "capabilities": json.dumps({"capabilities": capabilities})}
     if tags:
         data['tag'] = tags
-
     url = CLOUDPRINT_URL + "/submit"
     r = requests.post(url, data=data, files=files, **kwargs)
     return r.json if r.status_code == requests.codes.ok else r
