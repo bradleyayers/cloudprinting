@@ -1,5 +1,5 @@
 # coding: utf-8
-from attest import assert_hook, Tests
+from attest import assert_hook, Tests, raises
 from cloudprinting import (delete_job, get_job, list_jobs, list_printers,
                            OAuth2, submit_job)
 from os import environ
@@ -20,6 +20,16 @@ auth = OAuth2(access_token=None, token_type=None,
 @suite.test
 def oauth2_refresh():
     auth.refresh()
+
+
+@suite.test
+def oauth2_requires_argument_sets():
+    with raises(TypeError):
+        OAuth2()
+
+    # these should be fine
+    OAuth2(access_token="foo", token_type="bar")
+    OAuth2(client_id="foo", client_secret="bar", refresh_token="baz")
 
 
 @suite.test

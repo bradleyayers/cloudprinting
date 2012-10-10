@@ -59,15 +59,30 @@ class OAuth2(object):
     """
     OAuth2 authentication for Google Cloud Print.
 
-    If specified, the optional params *client_id*, *client_secret* and
-    *refresh_token* enable automatic refreshing of expired tokens.
+    The OAuth2 can be instantiated in two ways.
+
+    - Provide existing valid *access_token* and *token_type*; or/and
+    - Provide *refresh_token*, *client_id*, *client_secret*
+
+    It's possible to only provide the former arguments, which will mean that
+    once the token expires, the authentication will no longer work.
+
+    Alternatively the later arguments can be provided, which allows then
+    authentication tokens to be refreshed when they expire. In this scenario,
+    it's not necessary to provide the former arguments.
     """
     token_endpoint = "https://accounts.google.com/o/oauth2/token"
     device_code_endpoint = "https://accounts.google.com/o/oauth2/device/code"
     scope = "https://www.googleapis.com/auth/cloudprint"
 
-    def __init__(self, access_token, token_type, expires_in=None,
+    def __init__(self, access_token=None, token_type=None, expires_in=None,
                  refresh_token=None, client_id=None, client_secret=None):
+        if not ((access_token and token_type)
+                or (refresh_token and client_id and client_secret)):
+            raise TypeError("Invalid argument combination. Provide either "
+                "<access_token, token_type> or "
+                "<refresh_token, client_id, client_secret>.")
+
         self.access_token = access_token
         self.token_type = token_type
         self.refresh_token = refresh_token

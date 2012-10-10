@@ -65,6 +65,13 @@ Example::
 Change log
 ==========
 
+0.3.1
+=====
+
+- Make OAuth2 arguments all optional
+- Fix MANIFEST.in
+- Fix README bugs
+
 0.3.0
 =====
 
