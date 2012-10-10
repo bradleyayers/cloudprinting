@@ -21,6 +21,24 @@ Supports both Python 2 and 3:
 - ≥ Python 2.6
 - ≥ Python 3.2
 
+Install
+=======
+
+Use pip to install the latest version from PyPI:
+
+    pip install cloudprinting
+
+
+Command line interface
+======================
+
+The module can be used from the command line via::
+
+    python -m cloudprinting ...
+
+See ``--help`` for details.
+
+
 Tests
 =====
 
@@ -41,16 +59,6 @@ Example::
     GCP_PASSWORD=asdfghjklzxcvbnmqwertyuiop \
     GCP_PRINTER=0e50ed12-dbe0-54d3-a4bd-fdf9d45ff2fc \
     tox
-
-
-Command line interface
-======================
-
-The module can be used from the command line via::
-
-    python -m cloudprinting ...
-
-See ``--help`` for details.
 
 
 Change log
