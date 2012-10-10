@@ -75,7 +75,7 @@ class OAuth2(object):
     device_code_endpoint = "https://accounts.google.com/o/oauth2/device/code"
     scope = "https://www.googleapis.com/auth/cloudprint"
 
-    def __init__(self, access_token=None, token_type=None, expires_in=None,
+    def __init__(self, access_token=None, token_type=None,
                  refresh_token=None, client_id=None, client_secret=None):
         if not ((access_token and token_type)
                 or (refresh_token and client_id and client_secret)):
@@ -88,40 +88,45 @@ class OAuth2(object):
         self.refresh_token = refresh_token
         self.client_id = client_id
         self.client_secret = client_secret
-        # easier to work with a definite time in future, than a delta
-        if expires_in is not None:
-            self.expires_at = time() + expires_in
-        else:
-            self.expires_at = None
+        self.expired = not (access_token and token_type)
         self.lock = threading.RLock()
+
+    def _stamp(self, r):
+        """
+        Add authorization headers to a request.
+        """
+        r.headers['Authorization'] = "%s %s" % (self.token_type,
+                                                self.access_token)
 
     def __call__(self, r):
         with self.lock:
             if self.expired:
                 self.refresh()
-            r.headers['Authorization'] = "%s %s" % (self.token_type,
-                                                    self.access_token)
 
-            if self.client_id and self.client_secret and self.refresh_token:
-                # enable auto refreshing of token
-                def hook(response):
-                    if response.status_code == requests.codes.forbidden:
-                        self.expires_at = 0  # expire token
-                        self.refresh()
+        self._stamp(r)
+
+        if self.client_id and self.client_secret and self.refresh_token:
+            # enable auto refreshing of token
+            def hook(response):
+                if response.status_code == requests.codes.forbidden:
+                    self.expired = True
+                    self.refresh()
+                    if not self.expired:
                         request = response.request
+                        self._stamp(request)
                         request.deregister_hook('response', hook)  # retry one time
                         request.send(anyway=True)
                         return request.response
-                    return response
-                r.hooks['response'].insert(0, hook)
-            return r
+                return response
+            r.hooks['response'].insert(0, hook)
+        return r
 
     def refresh(self):
         """
         Refresh the ``access_code`` -- this is useful when it expires.
         """
         with self.lock:
-            if self.expired:
+            if not self.expired:
                 return
         r = requests.post(self.token_endpoint, data={
             "client_id": self.client_id,
@@ -129,21 +134,14 @@ class OAuth2(object):
             "refresh_token": self.refresh_token,
             "grant_type": "refresh_token"}).json
         self.access_token = r['access_token']
-        self.expires_at = r['expires_in'] + time()
+        self.expired = False
         self.token_type = r['token_type']
-
-    @property
-    def expired(self):
-        if self.expires_at is None:
-            # assume the worst
-            return True
-        return time() < self.expires_at
 
     @classmethod
     def authorise_device(cls, client_id, client_secret):
         """
-        A generator that manages the OAuth2 exchange to authorise an app to access
-        Google Cloud Print on behalf of a Google Account.
+        A generator that manages the OAuth2 exchange to authorise an app to
+        access Google Cloud Print on behalf of a Google Account.
 
         :param     client_id: "client ID" of application (Google API)
         :type      client_id: string

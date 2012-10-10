@@ -11,15 +11,9 @@ from time import sleep
 PRINTER_ID = environ.get('CP_PRINTER_ID', '__google__docs')
 PDF = join(dirname(__file__), "test.pdf")
 suite = Tests()
-auth = OAuth2(access_token=None, token_type=None,
-              client_id=environ['CP_CLIENT_ID'],
+auth = OAuth2(client_id=environ['CP_CLIENT_ID'],
               client_secret=environ['CP_CLIENT_SECRET'],
               refresh_token=environ['CP_REFRESH_TOKEN'])
-
-
-@suite.test
-def oauth2_refresh():
-    auth.refresh()
 
 
 @suite.test

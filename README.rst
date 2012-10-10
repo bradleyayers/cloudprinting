@@ -65,6 +65,12 @@ Example::
 Change log
 ==========
 
+0.3.2
+=====
+
+- Fix bug in auto-refreshing of OAuth2
+- Remove expiration time recording from OAuth2
+
 0.3.1
 =====
 
