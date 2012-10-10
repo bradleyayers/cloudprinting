@@ -24,7 +24,7 @@ Supports both Python 2 and 3:
 Install
 =======
 
-Use pip to install the latest version from PyPI:
+Use pip to install the latest version from PyPI::
 
     pip install cloudprinting
 
