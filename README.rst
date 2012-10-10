@@ -56,8 +56,9 @@ it.
 Example::
 
     CP_CLIENT_ID=1234567890.apps.googleusercontent.com \
-    GCP_PASSWORD=asdfghjklzxcvbnmqwertyuiop \
-    GCP_PRINTER=0e50ed12-dbe0-54d3-a4bd-fdf9d45ff2fc \
+    CP_CLIENT_SECRET=asdfghjklzxcvbnmqwertyuiop \
+    CP_REFESH_TOKEN=mnbvcxzlkjhgfdspoiuytr \
+    CP_PRINTER_ID=0e50ed12-dbe0-54d3-a4bd-fdf9d45ff2fc \
     tox
 
 
