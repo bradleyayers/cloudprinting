@@ -132,7 +132,7 @@ class OAuth2(object):
             "client_id": self.client_id,
             "client_secret": self.client_secret,
             "refresh_token": self.refresh_token,
-            "grant_type": "refresh_token"}).json
+            "grant_type": "refresh_token"}).json()
         self.access_token = r['access_token']
         self.expired = False
         self.token_type = r['token_type']
@@ -170,7 +170,7 @@ class OAuth2(object):
         """
         r = requests.post(cls.device_code_endpoint, data={
                 "client_id": client_id,
-                "scope": cls.scope}).json
+                "scope": cls.scope}).json()
         yield (r['verification_url'], r['user_code'])
 
         previous = 0
@@ -191,7 +191,7 @@ class OAuth2(object):
                     "client_secret": client_secret,
                     "code": device_code,
                     "grant_type": "http://oauth.net/grant_type/device/1.0",
-                }).json
+                }).json()
 
             if "error" in r:
                 # Either we're polling too fast, or the user hasn't accepted yet.

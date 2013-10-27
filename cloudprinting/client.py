@@ -38,7 +38,7 @@ def delete_job(id, **kwargs):
     """
     url = CLOUDPRINT_URL + "/deletejob"
     r = requests.post(url, data={"jobid": id}, **kwargs)
-    return r.json if r.status_code == requests.codes.ok else r
+    return r.json() if r.status_code == requests.codes.ok else r
 
 
 def list_jobs(printer=None, **kwargs):
@@ -65,7 +65,7 @@ def list_jobs(printer=None, **kwargs):
         return r
     # At the time of writing, the `/jobs` API returns `Content-Type:
     # text/plain` header
-    return (r.json if hasattr(r, "json") else json.loads(r.text))['jobs']
+    return (r.json() if hasattr(r, "json") else json.loads(r.text))['jobs']
 
 
 def list_printers(**kwargs):
@@ -84,7 +84,7 @@ def list_printers(**kwargs):
     r = requests.get(url, **kwargs)
     if r.status_code != requests.codes.ok:
         return r
-    return r.json
+    return r.json()
 
 
 def submit_job(printer, content, title=None, capabilities=None, tags=None,
@@ -138,4 +138,4 @@ def submit_job(printer, content, title=None, capabilities=None, tags=None,
         data['tag'] = tags
     url = CLOUDPRINT_URL + "/submit"
     r = requests.post(url, data=data, files=files, **kwargs)
-    return r.json if r.status_code == requests.codes.ok else r
+    return r.json() if r.status_code == requests.codes.ok else r
