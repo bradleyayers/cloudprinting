@@ -5,7 +5,7 @@ from os.path import basename
 import requests
 
 
-CLOUDPRINT_URL = "http://www.google.com/cloudprint"
+CLOUDPRINT_URL = "https://www.google.com/cloudprint"
 
 
 def get_job(id, printer=None, **kwargs):
