@@ -7,7 +7,7 @@ A simple interface to Google Cloud Print.
 Usage::
 
     >>> from cloudprinting import *
-    >>> auth = OAuth2(access_token="qwertyuiopasdfghjkl", token_token="Bearer")
+    >>> auth = OAuth2(access_token="qwertyuiopasdfghjkl", token_type="Bearer")
     >>> r = list_jobs(auth=auth)
     >>> r['jobs']
     [{"id": ...}, ...]
