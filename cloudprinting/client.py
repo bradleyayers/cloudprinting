@@ -88,7 +88,7 @@ def list_printers(**kwargs):
 
 
 def submit_job(printer, content, title=None, capabilities=None, tags=None,
-               **kwargs):
+               content_type=None, **kwargs):
     """
     Submit a print job.
 
@@ -132,7 +132,7 @@ def submit_job(printer, content, title=None, capabilities=None, tags=None,
     files = {"content": (name, content)}
     data = {"printerid": printer,
             "title": title,
-            "contentType": mimetypes.guess_type(name)[0],
+            "contentType": content_type or mimetypes.guess_type(name)[0],
             "capabilities": json.dumps({"capabilities": capabilities})}
     if tags:
         data['tag'] = tags
