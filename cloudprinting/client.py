@@ -92,16 +92,18 @@ def submit_job(printer, content, title=None, capabilities=None, tags=None,
     """
     Submit a print job.
 
-    :param      printer: the id of the printer to use
-    :type       printer: string
-    :param      content: what should be printer
-    :type       content: ``(name, file-like)`` pair or path
-    :param capabilities: capabilities for the printer
-    :type  capabilities: list
-    :param        title: title of the print job, should be unique to printer
-    :type         title: string
-    :param         tags: job tags
-    :type          tags: list
+    :param       printer: the id of the printer to use
+    :type        printer: string
+    :param       content: what should be printer
+    :type        content: ``(name, file-like)`` pair or path
+    :param  capabilities: capabilities for the printer
+    :type   capabilities: list
+    :param         title: title of the print job, should be unique to printer
+    :type          title: string
+    :param          tags: job tags
+    :type           tags: list
+    :params content_type: explicit mimetype for content
+    :type   content_type: string
 
     :returns: API response data as `dict`, or the HTTP response on failure
 
