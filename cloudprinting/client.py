@@ -88,20 +88,22 @@ def list_printers(**kwargs):
 
 
 def submit_job(printer, content, title=None, capabilities=None, tags=None,
-               **kwargs):
+               content_type=None, **kwargs):
     """
     Submit a print job.
 
-    :param      printer: the id of the printer to use
-    :type       printer: string
-    :param      content: what should be printer
-    :type       content: ``(name, file-like)`` pair or path
-    :param capabilities: capabilities for the printer
-    :type  capabilities: list
-    :param        title: title of the print job, should be unique to printer
-    :type         title: string
-    :param         tags: job tags
-    :type          tags: list
+    :param       printer: the id of the printer to use
+    :type        printer: string
+    :param       content: what should be printer
+    :type        content: ``(name, file-like)`` pair or path
+    :param  capabilities: capabilities for the printer
+    :type   capabilities: list
+    :param         title: title of the print job, should be unique to printer
+    :type          title: string
+    :param          tags: job tags
+    :type           tags: list
+    :params content_type: explicit mimetype for content
+    :type   content_type: string
 
     :returns: API response data as `dict`, or the HTTP response on failure
 
@@ -132,7 +134,7 @@ def submit_job(printer, content, title=None, capabilities=None, tags=None,
     files = {"content": (name, content)}
     data = {"printerid": printer,
             "title": title,
-            "contentType": mimetypes.guess_type(name)[0],
+            "contentType": content_type or mimetypes.guess_type(name)[0],
             "capabilities": json.dumps({"capabilities": capabilities})}
     if tags:
         data['tag'] = tags
